@@ -1,14 +1,12 @@
-from sqlalchemy import Column, Integer, {{ imports|join(", ") }}
-{% for line in extra_imports %}
-{{ line }}
-{% endfor %}
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, UUID
+from sqlalchemy.orm import relationship
+from uuid import uuid4
+from datetime import datetime
 from app.database.db_session import Base
-
 
 class {{ model_name|capitalize }}(Base):
     __tablename__ = "{{ table_name }}"
 
-    id = Column(Integer, primary_key=True, index=True)
-{% for field in fields %}
-    {{ field.name }} = Column({{ field.type }}{% if not field.nullable %}, nullable=False{% endif %}{% if field.format %}, {{ field.format }}{% endif %})
-{% endfor %}
+    {% for field in fields %}
+        {{ field.name }} = Column({{ field.type }}{% if field.nullable is not none %}, nullable={{ field.nullable }}{% endif %}{% if field.default %}, default={{ field.default }}{% endif %}{% if field.unique %}, unique={{ field.unique }}{% endif %}{% if field.index %}, index={{ field.index }}{% endif %}{% if field.primary_key %}, primary_key={{ field.primary_key }}{% endif %}{% if field.onupdate %}, onupdate={{ field.onupdate }}{% endif %}{% if field.format %}, format={{ field.format }}{% endif %})
+    {% endfor %}
