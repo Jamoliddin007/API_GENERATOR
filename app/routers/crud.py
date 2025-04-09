@@ -22,6 +22,8 @@ def create_crud_model(data: CrudModelCreate, db: Session = Depends(get_db)):
     db.refresh(crud)
     return crud
 
+
+
 # CRUD modeliga yangi field qo‘shish
 @router.post("/{crud_id}/fields/")
 def add_field_to_crud(crud_id: int, field: CrudFieldCreate, db: Session = Depends(get_db)):
