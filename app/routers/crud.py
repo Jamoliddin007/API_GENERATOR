@@ -8,7 +8,8 @@ from app.schemas.crud import CrudModelCreate, CrudFieldCreate
 
 router = APIRouter(prefix="/crud", tags=["CRUD Builder"])
 
-@router.post("/project/create")
+# CRUD modelini yaratish
+@router.post("/create")
 def create_crud_model(data: CrudModelCreate, db: Session = Depends(get_db)):
     # Oxirgi projectni olish
     project = db.query(Project).order_by(Project.id.desc()).first()
@@ -21,8 +22,7 @@ def create_crud_model(data: CrudModelCreate, db: Session = Depends(get_db)):
     db.refresh(crud)
     return crud
 
-
-
+# CRUD modeliga yangi field qo‘shish
 @router.post("/{crud_id}/fields/")
 def add_field_to_crud(crud_id: int, field: CrudFieldCreate, db: Session = Depends(get_db)):
     # Check CRUD exists
@@ -34,7 +34,12 @@ def add_field_to_crud(crud_id: int, field: CrudFieldCreate, db: Session = Depend
         name=field.name,
         type=field.type,
         nullable=field.nullable,
-        format=field.format,
+        default=field.default,  # default qiymatni qo‘shish
+        unique=field.unique,    # unique
+        index=field.index,      # index
+        primary_key=field.primary_key,  # primary key
+        onupdate=field.onupdate,  # onupdate (agar bo‘lsa)
+        format=field.format,    # format (agar bo‘lsa)
         crud_id=crud_id
     )
     db.add(db_field)
