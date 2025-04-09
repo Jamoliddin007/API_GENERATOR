@@ -1,7 +1,5 @@
-# app/generators/file_builder.py
-
-import os
 from jinja2 import Environment, FileSystemLoader
+import os
 from app.database.db_session import SessionLocal
 from app.models.crud import CrudModel, CrudField
 
@@ -25,7 +23,8 @@ def generate_code_files(crud_id: int):
             "String": "String",
             "Integer": "Integer",
             "Boolean": "Boolean",
-            "UUID": "UUID"
+            "UUID": "UUID",
+            "DateTime": "DateTime"  # qo'shimcha tur
         }
         return mapping.get(ftype, "String")
 
@@ -34,35 +33,38 @@ def generate_code_files(crud_id: int):
             "String": "str",
             "Integer": "int",
             "Boolean": "bool",
-            "UUID": "str"
+            "UUID": "str",
+            "DateTime": "datetime"  # qo'shimcha tur
         }
         return mapping.get(ftype, "str")
 
+    # Dinamik SQLAlchemy importlarini yaratish
     sqlalchemy_imports = list(set([map_sqlalchemy_type(f.type) for f in fields]))
 
+    # `extra_imports`ga kerakli importlarni qo‘shish
     extra_imports = []
     for f in fields:
         if f.format and "uuid4()" in f.format:
             extra_imports.append("from uuid import uuid4")
-
+        if f.type == "DateTime":
+            extra_imports.append("from datetime import datetime")
 
     render_data = {
-    "model_name": crud.name,
-    "table_name": crud.name.lower(),
-    "imports": sqlalchemy_imports,
-    "extra_imports": extra_imports,
-    "fields": [
-        {
-            "name": f.name,
-            "type": map_sqlalchemy_type(f.type),
-            "nullable": f.nullable,
-            "format": f.format,
-            "python_type": map_python_type(f.type)
-        }
-        for f in fields
-    ]
-}
-
+        "model_name": crud.name,
+        "table_name": crud.name.lower(),
+        "imports": sqlalchemy_imports,
+        "extra_imports": extra_imports,
+        "fields": [
+            {
+                "name": f.name,
+                "type": map_sqlalchemy_type(f.type),
+                "nullable": f.nullable,
+                "format": f.format,
+                "python_type": map_python_type(f.type)
+            }
+            for f in fields
+        ]
+    }
 
     # 📁 Saqlash yo‘llari
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
