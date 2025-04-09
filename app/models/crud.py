@@ -14,6 +14,8 @@ class CrudModel(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    fields = relationship("CrudField", back_populates="crud")
+
 class CrudField(Base):
     __tablename__ = "crud_fields"
 
@@ -27,6 +29,6 @@ class CrudField(Base):
     primary_key = Column(Boolean, default=False)
     onupdate = Column(String(255), nullable=True)
     format = Column(String(255), nullable=True)
-
     crud_id = Column(Integer, ForeignKey("crud_models.id"))
+
     crud = relationship("CrudModel", back_populates="fields")
