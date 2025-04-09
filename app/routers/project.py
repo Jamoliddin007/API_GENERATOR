@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.post("/projects/create")
 def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
-    db_project = Project(name=project.name)
+    db_project = Project(name=project.name,  subdomain=project.name.lower())
     db.add(db_project)
     db.commit()
     db.refresh(db_project)
