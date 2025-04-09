@@ -3,6 +3,14 @@ from typing import Optional
 from uuid import UUID
 from datetime import datetime
 
+
+class CrudModelCreate(BaseModel):
+    name: str
+    project_id: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
 class CrudFieldCreate(BaseModel):
     name: str
     type: str
