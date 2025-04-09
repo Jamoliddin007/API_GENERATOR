@@ -16,8 +16,6 @@ class CrudFieldCreate(BaseModel):
 
     class Config:
         from_attributes = True
-git add app/schemas/crud.py
-git commit -m "✨ Update CrudFieldCreate schema to support full field options and use 'from_attributes'"
 
 class CrudFieldOut(CrudFieldCreate):
     id: UUID
