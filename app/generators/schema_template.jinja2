@@ -1,0 +1,12 @@
+from pydantic import BaseModel
+
+class {{ model_name|capitalize }}Create(BaseModel):
+{% for field in fields %}
+    {{ field.name }}: {{ field.python_type }}
+{% endfor %}
+
+class {{ model_name|capitalize }}Out({{ model_name|capitalize }}Create):
+    id: int
+
+    class Config:
+        orm_mode = True

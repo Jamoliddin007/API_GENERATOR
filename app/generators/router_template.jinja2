@@ -1,0 +1,19 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from app.database.db_session import get_db
+from app.models.{{ model_name }} import {{ model_name|capitalize }}
+from app.schemas.{{ model_name }} import {{ model_name|capitalize }}Create, {{ model_name|capitalize }}Out
+
+router = APIRouter(prefix="/{{ model_name }}", tags=["{{ model_name|capitalize }}"])
+
+@router.post("/", response_model={{ model_name|capitalize }}Out)
+def create_{{ model_name }}(data: {{ model_name|capitalize }}Create, db: Session = Depends(get_db)):
+    new = {{ model_name|capitalize }}(**data.dict())
+    db.add(new)
+    db.commit()
+    db.refresh(new)
+    return new
+
+@router.get("/", response_model=list[{{ model_name|capitalize }}Out])
+def list_{{ model_name }}(db: Session = Depends(get_db)):
+    return db.query({{ model_name|capitalize }}).all()

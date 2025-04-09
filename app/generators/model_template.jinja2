@@ -1,0 +1,14 @@
+from sqlalchemy import Column, Integer, {{ imports|join(", ") }}
+{% for line in extra_imports %}
+{{ line }}
+{% endfor %}
+from app.database.db_session import Base
+
+
+class {{ model_name|capitalize }}(Base):
+    __tablename__ = "{{ table_name }}"
+
+    id = Column(Integer, primary_key=True, index=True)
+{% for field in fields %}
+    {{ field.name }} = Column({{ field.type }}{% if not field.nullable %}, nullable=False{% endif %}{% if field.format %}, {{ field.format }}{% endif %})
+{% endfor %}
