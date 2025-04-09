@@ -1,12 +1,20 @@
 from pydantic import BaseModel
+from uuid import UUID
+from typing import Optional
+from datetime import datetime
 
 class {{ model_name|capitalize }}Create(BaseModel):
+    name: str
+
 {% for field in fields %}
     {{ field.name }}: {{ field.python_type }}
 {% endfor %}
 
 class {{ model_name|capitalize }}Out({{ model_name|capitalize }}Create):
-    id: int
+    id: UUID
+    uuid_code: UUID
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
