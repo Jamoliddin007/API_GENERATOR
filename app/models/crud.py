@@ -9,6 +9,9 @@ class CrudModel(Base):
     name = Column(String(255), nullable=False)  # length ni qo'shdik
     project_id = Column(Integer, ForeignKey("projects.id"))
 
+    fields = relationship("CrudField", back_populates="crud")
+
+
 class CrudField(Base):
     __tablename__ = "crud_fields"
 
